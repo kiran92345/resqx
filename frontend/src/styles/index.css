@@ -96,6 +96,184 @@ body {
   background: var(--surface-elevated);
   border-bottom: 1px solid var(--border-subtle);
   backdrop-filter: blur(12px);
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+/* ── Responsive app shell (phone + laptop) ── */
+body.nav-drawer-open {
+  overflow: hidden;
+}
+
+.app-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(2, 6, 23, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  backdrop-filter: blur(2px);
+}
+
+.app-nav-backdrop--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (min-width: 1024px) {
+  .app-nav-backdrop {
+    display: none;
+  }
+}
+
+.app-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  transform: translateX(-105%);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.18);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.app-sidebar--open {
+  transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+  .app-sidebar {
+    position: static;
+    z-index: auto;
+    transform: none;
+    box-shadow: none;
+    width: 14rem;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .app-sidebar__close {
+    display: none;
+  }
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-main--with-mobile-nav {
+  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  .app-main {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .app-main--with-mobile-nav {
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-main {
+    padding: 1.5rem 1.75rem;
+  }
+}
+
+.app-mobile-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.25rem;
+  border-top: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface-elevated) 94%, transparent);
+  backdrop-filter: blur(14px);
+  padding: 0.35rem 0.5rem max(0.35rem, env(safe-area-inset-bottom));
+}
+
+.app-mobile-nav__item {
+  display: flex;
+  min-height: 44px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  border-radius: 0.625rem;
+  padding: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.app-mobile-nav__item--active {
+  color: #06b6d4;
+  background: color-mix(in srgb, #06b6d4 12%, transparent);
+}
+
+.app-mobile-nav__item--accent {
+  color: #06b6d4;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .modal-overlay {
+    align-items: center;
+    padding: 1rem;
+  }
+}
+
+.modal-sheet {
+  width: 100%;
+  max-width: 42rem;
+  max-height: min(92dvh, 920px);
+  overflow-y: auto;
+  border-radius: 1rem 1rem 0 0;
+  padding: 1.25rem;
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 640px) {
+  .modal-sheet {
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+.dashboard-page {
+  max-width: 1600px;
+}
+
+@media (max-width: 639px) {
+  .dashboard-header__dropdown {
+    right: 0;
+    left: auto;
+    width: min(18rem, calc(100vw - 2rem));
+  }
 }
 
 .dashboard-brand-logo-wrap {
@@ -1365,5 +1543,34 @@ body {
 [data-theme="light"] .weather-heatmap-layer {
   mix-blend-mode: normal;
   opacity: 0.55 !important;
+}
+
+/* ── Voice emergency mic pulse rings ── */
+.voice-mic-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, #ef4444 45%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.voice-mic-ring--a {
+  animation: voice-mic-ring 2s ease-out infinite;
+}
+
+.voice-mic-ring--b {
+  animation: voice-mic-ring 2s ease-out infinite 1s;
+}
+
+@keyframes voice-mic-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.65;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
 }
 

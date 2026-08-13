@@ -21,8 +21,8 @@ export function AuthScreen() {
 
   if (view === "splash") {
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center bg-navy bg-[radial-gradient(ellipse_80%_60%_at_50%_20%,rgba(0,240,255,0.12),transparent)] px-6">
-        <div className="absolute right-4 top-4"><ThemeToggle /></div>
+      <div className="relative flex min-h-screen min-h-[100dvh] flex-col items-center justify-center bg-navy bg-[radial-gradient(ellipse_80%_60%_at_50%_20%,rgba(0,240,255,0.12),transparent)] px-4 py-8 sm:px-6">
+        <div className="absolute right-4 top-4" style={{ top: "max(1rem, env(safe-area-inset-top))" }}><ThemeToggle /></div>
         <ShieldLogo size="lg" className="mb-12" />
         <button onClick={() => setView("login")} className="glow-cyan mb-4 w-full max-w-xs rounded-xl border border-accent-cyan/50 bg-accent-blue/20 py-3.5 text-sm font-bold uppercase tracking-widest text-accent-cyan hover:bg-accent-blue/30">Login</button>
         <button onClick={() => setView("signup")} className="text-sm font-medium text-accent-cyan/80 hover:text-accent-cyan">Sign Up</button>

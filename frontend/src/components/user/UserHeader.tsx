@@ -1,12 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, LogOut, User, WifiOff, Settings, ArrowLeft } from "lucide-react";
+import { ChevronDown, LogOut, User, WifiOff, Settings, ArrowLeft, Menu } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { ThemeToggle } from "../common/ThemeToggle";
 import { ResQXBrandLogo } from "../common/ResQXBrandLogo";
 import { USER_PAGE_TITLES } from "./UserPageHeader";
 
-export function UserHeader({ connected }: { connected?: boolean }) {
+export function UserHeader({
+  connected,
+  onMenuClick,
+  menuOpen,
+}: {
+  connected?: boolean;
+  onMenuClick?: () => void;
+  menuOpen?: boolean;
+}) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,9 +35,18 @@ export function UserHeader({ connected }: { connected?: boolean }) {
   }, []);
 
   return (
-    <header className="dashboard-header border-b border-[var(--border-subtle)] px-6 py-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex min-w-0 flex-1 items-center gap-3">
+    <header className="dashboard-header border-b border-[var(--border-subtle)] px-4 py-3 sm:px-6 sm:py-4">
+      <div className="flex items-center justify-between gap-2 sm:gap-4">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={onMenuClick}
+            className="dashboard-header__control flex h-10 w-10 shrink-0 items-center justify-center rounded-lg lg:hidden"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+          >
+            <Menu className="h-5 w-5" />
+          </button>
           {!isHome && (
             <button
               type="button"
@@ -43,8 +60,8 @@ export function UserHeader({ connected }: { connected?: boolean }) {
           )}
           {isHome ? (
             <>
-              <ResQXBrandLogo size="header" variant="wordmark" className="shrink-0" />
-              <span className="flex items-center gap-1.5 rounded-full border border-emergency-emerald/35 bg-emergency-emerald/12 px-2.5 py-0.5 text-xs font-medium text-emergency-emerald">
+              <ResQXBrandLogo size="header" variant="wordmark" className="min-w-0 shrink" />
+              <span className="hidden items-center gap-1.5 rounded-full border border-emergency-emerald/35 bg-emergency-emerald/12 px-2.5 py-0.5 text-xs font-medium text-emergency-emerald sm:flex">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emergency-emerald" />
                 SOS Ready
               </span>

@@ -13,8 +13,7 @@ import { WeatherForecastPage } from "./pages/admin/WeatherForecastPage";
 import { PlaceholderPage } from "./pages/admin/PlaceholderPage";
 import { AIAnalyticsPage } from "./pages/admin/AIAnalyticsPage";
 import { AdminSettingsPage } from "./pages/admin/AdminSettingsPage";
-import { AdminSidebar } from "./components/admin/AdminSidebar";
-import { DashboardHeader } from "./components/admin/DashboardHeader";
+import { AdminLayout } from "./components/admin/AdminLayout";
 import { UserLayout } from "./components/user/UserLayout";
 import { MobileHome } from "./pages/user/MobileHome";
 import { LiveTrackingScreen } from "./pages/user/LiveTrackingScreen";
@@ -67,7 +66,7 @@ function AdminLiveMapPage() {
   const [tracking, setTracking] = useState<TrackableIncident | null>(null);
   useEffect(() => { apiClient.fetchIncidents().then(setIncidents).catch(() => {}); }, []);
   return (
-    <div className="relative h-[calc(100vh-80px)] p-4">
+    <div className="relative h-[calc(100dvh-4rem)] min-h-[320px] p-3 sm:h-[calc(100vh-80px)] sm:p-4">
       <DashboardMap incidents={incidents} fullScreen onTrack={setTracking} onSelect={(i) => setTracking(fromApiIncident(i))} />
       {tracking && <IncidentTrackingPanel incident={tracking} onClose={() => setTracking(null)} />}
     </div>
@@ -87,16 +86,10 @@ function AdminLayoutShell() {
   const { connected, lastEvent } = useWebSocket();
   return (
     <RoleGuard role="admin">
-      <div className="flex min-h-screen bg-[var(--app-bg)]">
-        <LiveEventBridge lastEvent={lastEvent} role="admin" />
-        <AdminSidebar />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <DashboardHeader connected={connected} />
-          <main className="flex-1 overflow-y-auto">
-            <Outlet />
-          </main>
-        </div>
-      </div>
+      <LiveEventBridge lastEvent={lastEvent} role="admin" />
+      <AdminLayout connected={connected}>
+        <Outlet />
+      </AdminLayout>
     </RoleGuard>
   );
 }

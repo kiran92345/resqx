@@ -23,12 +23,12 @@ export function UserPageHeader({
       <button
         type="button"
         onClick={() => navigate(backTo)}
-        className="group mb-3 inline-flex items-center gap-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition hover:border-accent-cyan/40 hover:bg-accent-cyan/10 hover:text-accent-cyan"
+        className="group mb-3 hidden items-center gap-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition hover:border-accent-cyan/40 hover:bg-accent-cyan/10 hover:text-accent-cyan lg:inline-flex"
       >
         <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-0.5" />
         {backLabel}
       </button>
-      <h1 className="text-2xl font-bold text-[var(--text-primary)]">{title}</h1>
+      <h1 className="text-xl font-bold text-[var(--text-primary)] sm:text-2xl">{title}</h1>
       {subtitle && <p className="mt-1 text-sm text-[var(--text-muted)]">{subtitle}</p>}
     </div>
   );

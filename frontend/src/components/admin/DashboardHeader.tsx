@@ -1,13 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, ChevronDown, Calendar, User, LogOut, ShieldCheck, CheckCheck, WifiOff } from "lucide-react";
+import { Bell, ChevronDown, Calendar, User, LogOut, ShieldCheck, CheckCheck, WifiOff, Menu } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { MOCK_NOTIFICATIONS } from "../../data/mockDashboard";
 import clsx from "clsx";
 import { ThemeToggle } from "../common/ThemeToggle";
 import { ResQXBrandLogo } from "../common/ResQXBrandLogo";
 
-export function DashboardHeader({ connected }: { connected?: boolean }) {
+export function DashboardHeader({
+  connected,
+  onMenuClick,
+  menuOpen,
+}: {
+  connected?: boolean;
+  onMenuClick?: () => void;
+  menuOpen?: boolean;
+}) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [time, setTime] = useState(new Date());
@@ -40,19 +48,29 @@ export function DashboardHeader({ connected }: { connected?: boolean }) {
   }
 
   return (
-    <header className="dashboard-header px-6 py-4">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-wrap items-center gap-3">
+    <header className="dashboard-header px-4 py-3 sm:px-6 sm:py-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={onMenuClick}
+            className="dashboard-header__control flex h-10 w-10 shrink-0 items-center justify-center rounded-lg lg:hidden"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
             <ResQXBrandLogo size="header" variant="wordmark" />
             <span className="flex items-center gap-1.5 rounded-full border border-emergency-emerald/35 bg-emergency-emerald/12 px-2.5 py-0.5 text-xs font-medium text-emergency-emerald">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emergency-emerald" />
-              System Active
+              <span className="hidden sm:inline">System Active</span>
+              <span className="sm:hidden">Active</span>
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2">
           <span className="hidden rounded-full border border-accent-blue/30 bg-accent-blue/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent-blue sm:inline">
             Administrator
           </span>
@@ -115,7 +133,7 @@ export function DashboardHeader({ connected }: { connected?: boolean }) {
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-blue/15">
                 <User className="h-4 w-4 text-accent-blue" />
               </div>
-              <span className="dashboard-header__control-text hidden sm:inline">Admin Control Center</span>
+              <span className="dashboard-header__control-text hidden md:inline">Admin Control Center</span>
               <ChevronDown className="h-4 w-4 text-[var(--text-faint)]" />
             </button>
             {profileOpen && (

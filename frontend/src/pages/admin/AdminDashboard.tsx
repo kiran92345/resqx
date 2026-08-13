@@ -62,7 +62,7 @@ export function AdminDashboard() {
   }, []);
 
   return (
-    <div className="dashboard-page mx-auto space-y-5 overflow-y-auto p-5 md:p-6">
+    <div className="dashboard-page mx-auto space-y-4 overflow-y-auto p-4 sm:space-y-5 sm:p-5 md:p-6">
       {/* KPI metrics */}
       <section className="kpi-neuro-grid">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -85,26 +85,26 @@ export function AdminDashboard() {
 
       {/* Main row: map + alerts + resources */}
       <section className="grid gap-4 lg:grid-cols-12">
-        <div className="min-h-[440px] lg:col-span-5">
+        <div className="min-h-[300px] sm:min-h-[440px] lg:col-span-5">
           <DashboardMap
             incidents={incidents}
             onTrack={setTracking}
             onSelect={(inc) => setTracking(fromApiIncident(inc))}
           />
         </div>
-        <div className="min-h-[440px] lg:col-span-3">
+        <div className="min-h-[300px] sm:min-h-[440px] lg:col-span-3">
           <RecentAlertsPanel onTrack={setTracking} />
         </div>
-        <div className="min-h-[440px] lg:col-span-4">
+        <div className="min-h-[300px] sm:min-h-[440px] lg:col-span-4">
           <ResourceDonutChart />
         </div>
       </section>
 
       {/* Analytics row */}
       <section className="grid gap-4 lg:grid-cols-3">
-        <div className="min-h-[380px]"><AIRiskHeatmap /></div>
-        <div className="min-h-[380px]"><IncidentTrendChart /></div>
-        <div className="min-h-[380px]"><AIRecommendations /></div>
+        <div className="min-h-[280px] sm:min-h-[380px]"><AIRiskHeatmap /></div>
+        <div className="min-h-[280px] sm:min-h-[380px]"><IncidentTrendChart /></div>
+        <div className="min-h-[280px] sm:min-h-[380px]"><AIRecommendations /></div>
       </section>
 
       {tracking && (

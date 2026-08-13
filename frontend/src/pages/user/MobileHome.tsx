@@ -59,35 +59,35 @@ export function MobileHome() {
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)]">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)] sm:text-3xl">
           Hello, {user?.name?.split(" ")[0] ?? "User"}
         </h1>
-        <p className="mt-1 text-[var(--text-muted)]">Report emergencies, track response, and access nearby services.</p>
+        <p className="mt-1 text-sm text-[var(--text-muted)] sm:text-base">Report emergencies, track response, and access nearby services.</p>
       </div>
 
       {(!online || pendingCount > 0) && (
-        <div className="mb-6 flex items-center gap-2 rounded-xl border border-emergency-amber/30 bg-emergency-amber/10 px-4 py-3 text-sm text-emergency-amber">
+        <div className="mb-4 flex items-center gap-2 rounded-xl border border-emergency-amber/30 bg-emergency-amber/10 px-3 py-2.5 text-xs text-emergency-amber sm:mb-6 sm:px-4 sm:py-3 sm:text-sm">
           <WifiOff className="h-4 w-4 shrink-0" />
           {!online ? "Offline — SOS uses store-and-forward until network returns." : `${pendingCount} report(s) pending sync.`}
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-        <div className="glass-card flex flex-col items-center justify-center p-8 text-center">
-          <p className="mb-6 text-sm font-medium uppercase tracking-widest text-[var(--text-muted)]">Immediate Assistance</p>
+      <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr] lg:gap-6">
+        <div className="glass-card flex flex-col items-center justify-center p-5 text-center sm:p-8">
+          <p className="mb-4 text-xs font-medium uppercase tracking-widest text-[var(--text-muted)] sm:mb-6 sm:text-sm">Immediate Assistance</p>
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className="glow-red flex h-48 w-48 flex-col items-center justify-center rounded-full bg-emergency-red transition hover:scale-[1.02] active:scale-95"
+            className="glow-red flex h-36 w-36 flex-col items-center justify-center rounded-full bg-emergency-red transition active:scale-95 sm:h-44 sm:w-44 lg:h-48 lg:w-48 lg:hover:scale-[1.02]"
           >
-            <span className="text-5xl font-black text-white">SOS</span>
-            <span className="mt-2 px-4 text-sm text-red-100">Emergency — Click to Report</span>
+            <span className="text-4xl font-black text-white sm:text-5xl">SOS</span>
+            <span className="mt-1 px-3 text-xs text-red-100 sm:mt-2 sm:px-4 sm:text-sm">Tap to Report</span>
           </button>
           <button
             type="button"
             onClick={() => setVoiceOpen(true)}
-            className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-xl border border-accent-cyan/30 bg-accent-cyan/10 py-3 text-sm font-semibold text-accent-cyan transition hover:bg-accent-cyan/15"
+            className="mt-4 flex w-full max-w-xs items-center justify-center gap-2 rounded-xl border border-accent-cyan/30 bg-accent-cyan/10 py-3 text-sm font-semibold text-accent-cyan transition hover:bg-accent-cyan/15 sm:mt-6"
           >
             <Mic className="h-5 w-5" />
             Voice Emergency
@@ -95,17 +95,17 @@ export function MobileHome() {
         </div>
 
         <div>
-          <h2 className="mb-4 text-lg font-semibold text-[var(--text-primary)]">Quick Access</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <h2 className="mb-3 text-base font-semibold text-[var(--text-primary)] sm:mb-4 sm:text-lg">Quick Access</h2>
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
             {QUICK_LINKS.map(({ label, icon: Icon, color, bg, route }) => (
               <button
                 key={label}
                 type="button"
                 onClick={() => navigate(route)}
-                className={`flex flex-col items-center gap-2 rounded-xl border p-5 transition hover:bg-white/[0.06] ${bg}`}
+                className={`flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-xl border p-3 transition hover:bg-white/[0.06] sm:min-h-0 sm:p-5 ${bg}`}
               >
-                <Icon className={`h-7 w-7 ${color}`} />
-                <span className="text-sm font-medium text-[var(--text-primary)]">{label}</span>
+                <Icon className={`h-6 w-6 sm:h-7 sm:w-7 ${color}`} />
+                <span className="text-center text-xs font-medium text-[var(--text-primary)] sm:text-sm">{label}</span>
               </button>
             ))}
           </div>
