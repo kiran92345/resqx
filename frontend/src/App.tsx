@@ -1,30 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { ToastProvider, useToast } from "./components/common/Toast";
 import { useWebSocket } from "./hooks/useWebSocket";
 import { AuthScreen } from "./pages/AuthScreen";
-import { AdminDashboard } from "./pages/admin/AdminDashboard";
-import { IncidentTable } from "./pages/admin/IncidentTable";
-import { ResourceHub } from "./pages/admin/ResourceHub";
-import { DispatchCenter } from "./pages/admin/DispatchCenter";
-import { WeatherForecastPage } from "./pages/admin/WeatherForecastPage";
-import { PlaceholderPage } from "./pages/admin/PlaceholderPage";
-import { AIAnalyticsPage } from "./pages/admin/AIAnalyticsPage";
-import { AdminSettingsPage } from "./pages/admin/AdminSettingsPage";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { UserLayout } from "./components/user/UserLayout";
-import { MobileHome } from "./pages/user/MobileHome";
-import { LiveTrackingScreen } from "./pages/user/LiveTrackingScreen";
-import { AlertsScreen } from "./pages/user/AlertsScreen";
-import { EmergencyStatusScreen } from "./pages/user/EmergencyStatusScreen";
-import { EmergencyHistoryScreen } from "./pages/user/EmergencyHistoryScreen";
-import { HospitalsScreen } from "./pages/user/HospitalsScreen";
-import { NearbyServicesScreen } from "./pages/user/NearbyServicesScreen";
-import { VoiceEmergencyPage } from "./pages/user/VoiceEmergencyPage";
-import { UserWeatherPage } from "./pages/user/UserWeatherPage";
-import { UserSettingsPage } from "./pages/user/UserSettingsPage";
 import { DashboardMap } from "./components/map/DashboardMap";
 import { TrackingProvider } from "./context/TrackingContext";
 import { IncidentTrackingPanel } from "./components/incident/IncidentTrackingPanel";
@@ -32,6 +14,33 @@ import { fromApiIncident, type TrackableIncident } from "./data/incidentTracking
 import * as apiClient from "./api/client";
 import { ThemeProvider } from "./context/ThemeContext";
 import type { Incident, UserRole } from "./types";
+
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard").then((m) => ({ default: m.AdminDashboard })));
+const IncidentTable = lazy(() => import("./pages/admin/IncidentTable").then((m) => ({ default: m.IncidentTable })));
+const ResourceHub = lazy(() => import("./pages/admin/ResourceHub").then((m) => ({ default: m.ResourceHub })));
+const DispatchCenter = lazy(() => import("./pages/admin/DispatchCenter").then((m) => ({ default: m.DispatchCenter })));
+const WeatherForecastPage = lazy(() => import("./pages/admin/WeatherForecastPage").then((m) => ({ default: m.WeatherForecastPage })));
+const PlaceholderPage = lazy(() => import("./pages/admin/PlaceholderPage").then((m) => ({ default: m.PlaceholderPage })));
+const AIAnalyticsPage = lazy(() => import("./pages/admin/AIAnalyticsPage").then((m) => ({ default: m.AIAnalyticsPage })));
+const AdminSettingsPage = lazy(() => import("./pages/admin/AdminSettingsPage").then((m) => ({ default: m.AdminSettingsPage })));
+const MobileHome = lazy(() => import("./pages/user/MobileHome").then((m) => ({ default: m.MobileHome })));
+const LiveTrackingScreen = lazy(() => import("./pages/user/LiveTrackingScreen").then((m) => ({ default: m.LiveTrackingScreen })));
+const AlertsScreen = lazy(() => import("./pages/user/AlertsScreen").then((m) => ({ default: m.AlertsScreen })));
+const EmergencyStatusScreen = lazy(() => import("./pages/user/EmergencyStatusScreen").then((m) => ({ default: m.EmergencyStatusScreen })));
+const EmergencyHistoryScreen = lazy(() => import("./pages/user/EmergencyHistoryScreen").then((m) => ({ default: m.EmergencyHistoryScreen })));
+const HospitalsScreen = lazy(() => import("./pages/user/HospitalsScreen").then((m) => ({ default: m.HospitalsScreen })));
+const NearbyServicesScreen = lazy(() => import("./pages/user/NearbyServicesScreen").then((m) => ({ default: m.NearbyServicesScreen })));
+const VoiceEmergencyPage = lazy(() => import("./pages/user/VoiceEmergencyPage").then((m) => ({ default: m.VoiceEmergencyPage })));
+const UserWeatherPage = lazy(() => import("./pages/user/UserWeatherPage").then((m) => ({ default: m.UserWeatherPage })));
+const UserSettingsPage = lazy(() => import("./pages/user/UserSettingsPage").then((m) => ({ default: m.UserSettingsPage })));
+
+function PageLoader() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent-cyan border-t-transparent" />
+    </div>
+  );
+}
 
 function LiveEventBridge({
   lastEvent,
@@ -88,7 +97,9 @@ function AdminLayoutShell() {
     <RoleGuard role="admin">
       <LiveEventBridge lastEvent={lastEvent} role="admin" />
       <AdminLayout connected={connected}>
-        <Outlet />
+        <Suspense fallback={<PageLoader />}>
+          <Outlet />
+        </Suspense>
       </AdminLayout>
     </RoleGuard>
   );
@@ -100,7 +111,9 @@ function UserLayoutShell() {
     <RoleGuard role="user">
       <LiveEventBridge lastEvent={lastEvent} role="user" />
       <UserLayout connected={connected}>
-        <Outlet />
+        <Suspense fallback={<PageLoader />}>
+          <Outlet />
+        </Suspense>
       </UserLayout>
     </RoleGuard>
   );

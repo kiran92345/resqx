@@ -8,10 +8,12 @@ import type {
 } from "../types";
 import type { XAIAnalytics } from "../types/xai";
 
+import { storageGet } from "../utils/safeStorage";
+
 export const api = axios.create({ baseURL: "/api" });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("resqx_token");
+  const token = storageGet("resqx_token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });

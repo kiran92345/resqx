@@ -5,10 +5,17 @@ export interface LiveEvent {
   payload: any;
 }
 
+/** Skip WebSocket when frontend is deployed without a backend (e.g. Vercel-only). */
+function shouldUseWebSocket(): boolean {
+  if (import.meta.env.VITE_ENABLE_WS === "false") return false;
+  if (import.meta.env.VITE_ENABLE_WS === "true") return true;
+  // Default: only connect on local dev (Vite proxy handles /ws)
+  return import.meta.env.DEV;
+}
+
 /**
- * Connects to the ResQ-X backend's /ws/live socket and exposes the most
- * recent event. Reconnects automatically with backoff if the connection
- * drops (e.g. backend restart).
+ * Connects to /ws/live when a backend is available.
+ * On Vercel-only deploys this stays idle so mobile browsers are not stuck retrying.
  */
 export function useWebSocket() {
   const [lastEvent, setLastEvent] = useState<LiveEvent | null>(null);
@@ -16,12 +23,18 @@ export function useWebSocket() {
   const retryRef = useRef(1000);
 
   useEffect(() => {
-    let socket: WebSocket;
+    if (!shouldUseWebSocket()) return;
+
+    let socket: WebSocket | undefined;
     let cancelled = false;
 
     function connect() {
-      const proto = window.location.protocol === "https:" ? "wss" : "ws";
-      socket = new WebSocket(`${proto}://${window.location.host}/ws/live`);
+      try {
+        const proto = window.location.protocol === "https:" ? "wss" : "ws";
+        socket = new WebSocket(`${proto}://${window.location.host}/ws/live`);
+      } catch {
+        return;
+      }
 
       socket.onopen = () => {
         setConnected(true);
@@ -41,7 +54,7 @@ export function useWebSocket() {
           retryRef.current = Math.min(retryRef.current * 2, 15000);
         }
       };
-      socket.onerror = () => socket.close();
+      socket.onerror = () => socket?.close();
     }
 
     connect();

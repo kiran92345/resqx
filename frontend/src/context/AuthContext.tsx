@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { AuthUser, UserRole } from "../types";
 import * as apiClient from "../api/client";
+import { storageGet, storageSet, storageRemove } from "../utils/safeStorage";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -23,7 +24,7 @@ function normalizeUser(raw: AuthUser): AuthUser {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() => {
-    const raw = localStorage.getItem("resqx_user");
+    const raw = storageGet("resqx_user");
     if (!raw) return null;
     try {
       return normalizeUser(JSON.parse(raw));
@@ -33,18 +34,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    if (user) localStorage.setItem("resqx_user", JSON.stringify(user));
+    if (user) storageSet("resqx_user", JSON.stringify(user));
   }, [user]);
 
   async function login(email: string, password: string) {
     const { access_token, user: u } = await apiClient.login(email, password);
-    localStorage.setItem("resqx_token", access_token);
+    storageSet("resqx_token", access_token);
     setUser(normalizeUser(u));
   }
 
   async function signup(name: string, email: string, password: string, role: UserRole) {
     const { access_token, user: u } = await apiClient.signup(name, email, password, role);
-    localStorage.setItem("resqx_token", access_token);
+    storageSet("resqx_token", access_token);
     setUser(normalizeUser(u));
   }
 
@@ -56,13 +57,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: role === "admin" ? "admin@resqx.demo" : "user@resqx.demo",
       role,
     };
-    localStorage.setItem("resqx_token", fakeToken);
+    storageSet("resqx_token", fakeToken);
     setUser(fakeUser);
   }
 
   function logout() {
-    localStorage.removeItem("resqx_token");
-    localStorage.removeItem("resqx_user");
+    storageRemove("resqx_token");
+    storageRemove("resqx_user");
     setUser(null);
   }
 

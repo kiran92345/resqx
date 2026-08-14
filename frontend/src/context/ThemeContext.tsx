@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { storageGet, storageSet } from "../utils/safeStorage";
 
 export type Theme = "dark" | "light";
 
@@ -12,14 +13,14 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
-    const saved = localStorage.getItem("resqx_theme");
+    const saved = storageGet("resqx_theme");
     return saved === "light" ? "light" : "dark";
   });
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("resqx_theme", theme);
+    storageSet("resqx_theme", theme);
   }, [theme]);
 
   function setTheme(t: Theme) {

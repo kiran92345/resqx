@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import type { TrackableIncident } from "../data/incidentTracking";
+import { storageGet, storageSet, storageRemove } from "../utils/safeStorage";
 
 interface TrackingContextValue {
   tracking: TrackableIncident | null;
@@ -11,19 +12,24 @@ const TrackingContext = createContext<TrackingContextValue | undefined>(undefine
 
 export function TrackingProvider({ children }: { children: React.ReactNode }) {
   const [tracking, setTracking] = useState<TrackableIncident | null>(() => {
-    const raw = localStorage.getItem("resqx_tracking");
-    return raw ? JSON.parse(raw) : null;
+    const raw = storageGet("resqx_tracking");
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as TrackableIncident;
+    } catch {
+      return null;
+    }
   });
 
   const startTracking = useCallback((incident: TrackableIncident) => {
     setTracking(incident);
-    localStorage.setItem("resqx_tracking", JSON.stringify(incident));
-    localStorage.setItem("resqx_last_incident", incident.id);
+    storageSet("resqx_tracking", JSON.stringify(incident));
+    storageSet("resqx_last_incident", incident.id);
   }, []);
 
   const stopTracking = useCallback(() => {
     setTracking(null);
-    localStorage.removeItem("resqx_tracking");
+    storageRemove("resqx_tracking");
   }, []);
 
   return (

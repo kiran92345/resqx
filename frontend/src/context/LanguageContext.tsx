@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import type { AppLanguage, TranslationKey } from "../i18n/translations";
 import { t as translate } from "../i18n/translations";
+import { storageGet, storageSet } from "../utils/safeStorage";
 
 interface LanguageContextValue {
   language: AppLanguage;
@@ -12,13 +13,13 @@ const LanguageContext = createContext<LanguageContextValue | undefined>(undefine
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<AppLanguage>(() => {
-    const saved = localStorage.getItem("resqx_language");
+    const saved = storageGet("resqx_language");
     if (saved === "te" || saved === "ta" || saved === "kn" || saved === "en") return saved;
     return "en";
   });
 
   useEffect(() => {
-    localStorage.setItem("resqx_language", language);
+    storageSet("resqx_language", language);
     document.documentElement.lang = language === "en" ? "en" : language;
   }, [language]);
 
